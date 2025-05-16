@@ -1,0 +1,20 @@
+<div *ngIf="state$ | async as st">
+    <div class="cheats-left">Cheats left: {{ st.cheatLeft }}</div>
+  
+    <div class="dice-row">
+      <button *ngFor="let die of st.rolls[st.currentRollIdx]; let i = index"
+              (click)="onCheat(st.currentRollIdx, i, (die % 6) + 1)">
+        🎲 {{ die }}
+      </button>
+    </div>
+  
+    <table class="score-table">
+      <tr *ngFor="let row of ['ones','twos','threes','fours','fives','sixes','min','max','3kind','4kind','full','straight','yatzy']"
+          (mouseover)="onHover(row, st)"
+          (click)="onSubmit(row)"
+          [class.hovered]="previewScore !== null">
+        <td>{{ row }}</td>
+        <td>{{ st.usedRows[row] ?? (previewScore || '') }}</td>
+      </tr>
+    </table>
+  </div>

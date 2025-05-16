@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { DiceComponent } from './dice/dice.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [CommonModule, DiceComponent],
+  template: `<app-dice></app-dice>`,
+  styles: [`
+    :host { display: block; padding: 1rem; font-family: Arial, sans-serif; }
+    h3 { margin-bottom: 0.5rem; }
+  `]
 })
-export class AppComponent {
-  title = 'yamble';
-}
+export class AppComponent {}
