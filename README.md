@@ -1,5 +1,10 @@
 # Yamble
 
+Front-end in progress!
+Project made for RWA class, by Bogdan Micić - 18292 :)
+
+---
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
 
 ## Development server
