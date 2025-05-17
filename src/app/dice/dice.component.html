@@ -1,20 +1,30 @@
-<div *ngIf="state$ | async as st">
-    <div class="cheats-left">Cheats left: {{ st.cheatLeft }}</div>
+<ng-container *ngIf="state$ | async as st">
+    <div class="game-layout">
+      <table class="score-table">
+        <tr *ngFor="let row of ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total']"
+            (click)="onSubmit(row)">
+          <td>{{ row }}</td>
+          <td>{{ st.usedRows[row] || '-' }}</td>
+        </tr>
+      </table>
   
-    <div class="dice-row">
-      <button *ngFor="let die of st.rolls[st.currentRollIdx]; let i = index"
-              (click)="onCheat(st.currentRollIdx, i, (die % 6) + 1)">
-        🎲 {{ die }}
-      </button>
+      <div class="dice-panel">
+        <div class="cheats-left">Cheats left: {{ st.cheatLeft }}</div>
+        <div class="dice-row">
+          <div *ngFor="let die of st.rolls[st.currentRollIdx]; let i = index" class="die-wrapper">
+            <svg (click)="onDieClick(i)"
+                 [class.selected]="selectedDie===i"
+                 width="50" height="50" viewBox="0 0 100 100">
+              <rect width="100" height="100" rx="15" ry="15" fill="white" stroke="#333" stroke-width="10" />
+              <circle *ngFor="let p of getDotPositions(die)"
+                      [attr.cx]="p.x" [attr.cy]="p.y" r="8" fill="black" />
+            </svg>
+  
+            <div *ngIf="selectedDie === i" @menuToggle class="radial-menu">
+              <button *ngFor="let v of [1,2,3,4,5,6]" (click)="onCheat(st.currentRollIdx, i, v)">{{ v }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  
-    <table class="score-table">
-      <tr *ngFor="let row of ['ones','twos','threes','fours','fives','sixes','min','max','3kind','4kind','full','straight','yatzy']"
-          (mouseover)="onHover(row, st)"
-          (click)="onSubmit(row)"
-          [class.hovered]="previewScore !== null">
-        <td>{{ row }}</td>
-        <td>{{ st.usedRows[row] ?? (previewScore || '') }}</td>
-      </tr>
-    </table>
-  </div>
+  </ng-container>

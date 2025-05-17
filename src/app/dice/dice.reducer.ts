@@ -16,40 +16,54 @@ export const initialState: DiceState = {
   usedRows: {}
 };
 
-// Yamb scoring helper
+// Yamb poeni
 export function scoreRow(row: string, dice: number[]): number {
   const counts = dice.reduce((acc, d) => { acc[d] = (acc[d]||0) + 1; return acc; }, {} as Record<number,number>);
   switch (row) {
-    case 'ones': case 'twos': case 'threes': case 'fours': case 'fives': case 'sixes': {
+    case 'Ones': case 'Twos': case 'Threes': case 'Fours': case 'Fives': case 'Sixes': {
       const numMap: Record<string,number> = { ones:1, twos:2, threes:3, fours:4, fives:5, sixes:6 };
       const n = numMap[row];
       return (counts[n] || 0) * n;
     }
-    case 'min':
+    case 'Minimum': //min
       return [...dice].sort((a,b)=>a-b).slice(0,5).reduce((s,v)=>s+v, 0);
-    case 'max':
+    case 'Maximum': //max
       return [...dice].sort((a,b)=>b-a).slice(0,5).reduce((s,v)=>s+v, 0);
-    case '3kind':
-      return Object.values(counts).some(c=>c>=3) ? dice.reduce((a,b)=>a+b,0) + 20 : 0;
-    case '4kind':
-      return Object.values(counts).some(c=>c>=4) ? dice.reduce((a,b)=>a+b,0) + 30 : 0;
-    case 'full': {
+    case '3-of-a-Kind': //triling
+        const triples = Object.entries(counts)
+        .filter(([face, c]) => c >= 3)
+        .map(([face]) => +face);
+        if (triples.length === 0) return 0;
+        const best = Math.max(...triples);
+        return best * 3 + 20;
+    case '4-of-a-Kind': //poker
+        const quads = Object.entries(counts)
+        .filter(([face, c]) => c >= 3)
+        .map(([face]) => +face);
+        if (quads.length === 0) return 0;
+        const best2 = Math.max(...quads);
+        return best2 * 4 + 40;
+    case 'Full House': { //ful
       const values = Object.values(counts);
       const has3 = values.includes(3);
       const has2 = values.includes(2);
       return (has3 && has2) ? 50 : 0;
     }
-    case 'straight': {
+    case 'Straight': { //kenta
       const uniq = Array.from(new Set(dice)).sort((a,b)=>a-b);
       const str = uniq.join('');
-      const small = str.includes('1234') || str.includes('2345');
       const large = str.includes('12345') || str.includes('23456');
-      return large ? 75 : small ? 55 : 0;
+      return large ? 66 : 0;
     }
-    case 'yatzy':
-      return Object.values(counts).some(c=>c===5) ? 100 : 0;
+    case 'Yamb':
+        const yambs = Object.entries(counts)
+        .filter(([face, c]) => c >= 3)
+        .map(([face]) => +face);
+        if (yambs.length === 0) return 0;
+        const best3 = Math.max(...yambs);
+        return best3 * 5 + 50;
     default:
-      return 0;
+      return -1;
   }
 }
 

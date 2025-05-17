@@ -1,35 +1,54 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { NgIf, NgForOf, AsyncPipe } from '@angular/common';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { DiceState } from './dice.reducer';
-import { submitScore, cheatDie } from './dice.actions';
-import { scoreRow } from './dice.reducer';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import * as DiceActions from './dice.actions';
+import { DiceState, scoreRow } from './dice.reducer';
 
 @Component({
   selector: 'app-dice',
-  templateUrl: './dice.component.html',
+  standalone: true,
   imports: [NgIf, NgForOf, AsyncPipe],
-  styleUrls: ['./dice.component.css']
+  templateUrl: './dice.component.html',
+  styleUrls: ['./dice.component.css'],
+  animations: [
+    trigger('menuToggle', [
+      transition(':enter', [ style({ transform: 'translate(-50%, -50%) scale(0)' }), animate('150ms ease-out', style({ transform: 'translate(-50%, -50%) scale(1)' })) ]),
+      transition(':leave', [ animate('150ms ease-in', style({ transform: 'translate(-50%, -50%) scale(0)' })) ])
+    ])
+  ]
 })
 export class DiceComponent {
   state$: Observable<DiceState>;
-  previewScore: number | null = null;
+  selectedDie: number | null = null;
 
   constructor(private store: Store<{ dice: DiceState }>) {
-    this.state$ = store.select('dice');
+    this.state$ = this.store.pipe(select('dice'));
   }
 
-  onHover(row: string, st: DiceState) {
-    const current = st.rolls[st.currentRollIdx];
-    this.previewScore = scoreRow(row, current);
+  onDieClick(idx: number) {
+    this.selectedDie = this.selectedDie === idx ? null : idx;
+  }
+
+  onCheat(rollIdx: number, dieIdx: number, val: number) {
+    this.store.dispatch(DiceActions.cheatDie({ rollIndex: rollIdx, dieIndex: dieIdx, newValue: val }));
+    this.selectedDie = null;
   }
 
   onSubmit(row: string) {
-    this.store.dispatch(submitScore({ scoreRow: row }));
+    this.store.dispatch(DiceActions.submitScore({ scoreRow: row }));
   }
 
-  onCheat(rollIndex: number, dieIndex: number, newValue: number) {
-    this.store.dispatch(cheatDie({ rollIndex, dieIndex, newValue }));
+  getDotPositions(die: number): { x: number; y: number }[] { //ovo crta svgove
+    const mid = 50, off = 25;
+    return {
+      1: [{ x: mid, y: mid }],
+      2: [{ x: mid - off, y: mid - off }, { x: mid + off, y: mid + off }],
+      3: [{ x: mid, y: mid }, { x: mid - off, y: mid - off }, { x: mid + off, y: mid + off }],
+      4: [{ x: mid - off, y: mid - off }, { x: mid + off, y: mid - off }, { x: mid - off, y: mid + off }, { x: mid + off, y: mid + off }],
+      5: [{ x: mid, y: mid }, { x: mid - off, y: mid - off }, { x: mid + off, y: mid - off }, { x: mid - off, y: mid + off }, { x: mid + off, y: mid + off }],
+      6: [{ x: mid - off, y: mid - off }, { x: mid + off, y: mid - off }, { x: mid - off, y: mid }, { x: mid + off, y: mid }, { x: mid - off, y: mid + off }, { x: mid + off, y: mid + off }]
+    }[die] || [];
   }
 }

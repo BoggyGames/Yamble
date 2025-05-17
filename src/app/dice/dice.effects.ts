@@ -1,1 +1,1 @@
-export class DiceEffects {}
+export class DiceEffects {} //ako mi zatreba, neka ga

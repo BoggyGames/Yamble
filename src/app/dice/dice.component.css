@@ -1,33 +1,30 @@
-.dice-wrapper { position: relative; }
-.dice-row { display: flex; gap: 1rem; }
-.die {
-  width: 50px; height: 50px;
-  background: white;
-  border: 2px solid #333;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.2s;
+.cheats-left {
+    font-family: "Bahnschrift", sans-serif;
 }
+.game-layout { display: flex; justify-content: center; align-items: flex-start; gap: 1rem; }
+.score-table {
+     flex: 0 1 auto;
+     font-family: "Bahnschrift", sans-serif;
+    }
+.dice-panel { display: flex; flex-direction: column; align-items: center; }
+.cheats-left { margin-bottom: 1rem; font-weight: bold; }
+.dice-row { display: flex; flex-wrap: wrap; gap: 1rem; }
+.die-wrapper { position: relative; }
+svg.selected { transform: scale(1.1); }
 .radial-menu {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
+    pointer-events: none;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 120px; height: 120px;
-  pointer-events: none;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 20;
 }
 .radial-menu button {
-  position: absolute;
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: #eee;
-  border: 1px solid #666;
-  pointer-events: auto;
+    pointer-events: auto;
+    font-family: "Bahnschrift", sans-serif;
+  position: absolute; width: 30px; height: 30px;
+  border-radius: 50%; background: rgb(176, 113, 212); border: 2px solid rgb(20, 20, 20);
+  z-index: 20;
 }
-/* Position six buttons in a circle */
 .radial-menu button:nth-child(1) { top: 0; left: 45px; }
 .radial-menu button:nth-child(2) { top: 15px; right: 0; }
 .radial-menu button:nth-child(3) { bottom: 15px; right: 0; }
@@ -35,21 +32,21 @@
 .radial-menu button:nth-child(5) { bottom: 15px; left: 0; }
 .radial-menu button:nth-child(6) { top: 15px; left: 0; }
 
-/* Simple modal */
-.modal {
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.5); display:flex;
-    justify-content:center; align-items:center;
-  }
-  .modal-content {
-    background:#fff; padding:2rem; border-radius:8px;
-  }
-  .dice-row { display:flex; gap:1rem; margin-bottom:1rem; }
-  .die {
-    width:50px; height:50px; background:#fff;
-    border:2px solid #333; border-radius:8px;
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
-  }
-  .score-sheet { width:100%; border-collapse:collapse; margin-top:1rem; }
-  .score-sheet th, .score-sheet td { border:1px solid #ccc; padding:0.5rem; }
+svg {
+    border-radius: 7px;
+}
+
+tr:nth-child(even) {
+    background-color: #d5cae2;
+    height: 30px;
+}
+
+tr:nth-child(odd) {
+    background-color: #d4bedf;
+    height: 30px;
+}
+
+
+table {
+    
+}
