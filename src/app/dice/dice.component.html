@@ -5,7 +5,7 @@
           <td>{{ row }}</td>
           <td (click)="onSubmit(row, st.usedRows)"
           (mouseenter)="onHover(row, st.usedRows)"
-          (mouseleave)="onUnhover(row)">{{ hoveredRow === row ? st.preview : (st.usedRows[row] >= 0 ? st.usedRows[row] : '') }}</td>
+          (mouseleave)="onUnhover(row)">{{ hoveredRow === row ? st.preview : (st.usedRows[row] >= -200 ? st.usedRows[row] : '') }}</td>
         </tr>
       </table>
   
@@ -28,8 +28,8 @@
           <div *ngIf="st.currentRollIdx == 13" class="final-score">
             <h1>{{ st.usedRows["∑ Total"] >= 300 ? "Well done!" : "Better luck next time..." }}</h1>
             <p>Your total was <b>{{st.usedRows["∑ Total"]}}</b> - share it with your friends!<br>Thanks for playing today!</p>
-            <button class="final-btn" (click)="clipboard(st.usedRows)">Share (to clipboard)</button>
-            <button class="final-btn">Practice Mode</button>
+            <button *ngIf="practiceMode === false" class="final-btn" (click)="clipboard(st.usedRows)">Share (to clipboard)</button>
+            <button class="final-btn" (click)="practice()">Practice Mode</button>
           </div>
         </div>
       </div>

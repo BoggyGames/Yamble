@@ -24,6 +24,7 @@ export class DiceComponent {
   selectedDie: number | null = null; //kliknuta kockica :)
   hoveredRow: string | null = null; //turen mis na red :)
   wouldScore: any;
+  practiceMode: boolean = false;
 
   constructor(private store: Store<{ dice: DiceState }>) {
     this.state$ = this.store.pipe(select('dice'));
@@ -40,6 +41,11 @@ export class DiceComponent {
 
   clipboard(a: any) {
     navigator.clipboard.writeText("🎲 I scored " + a["∑ Total"] + " points at Yamble today - dare to challenge me?\nhttps://www.boggy.dev/");
+  }
+
+  practice() {
+    this.practiceMode = true;
+    this.store.dispatch(DiceActions.reset());
   }
 
   onHover(row: string, used: any) {
@@ -65,7 +71,7 @@ export class DiceComponent {
       return;
     if (!(used[row] >= 0))
       //alert("huh?")
-      this.store.dispatch(DiceActions.submitScore({ scoreRow: row }));
+      this.store.dispatch(DiceActions.submitScore({ scoreRow: row, practice: this.practiceMode }));
     //console.log(used);
   }
 

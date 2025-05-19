@@ -1,6 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 
 export const loadRolls = createAction('[Dice] Load Rolls');
+
+export const reset = createAction('[Dice] Reset');
+
 export const loadRollsSuccess = createAction(
   '[Dice] Load Rolls Success',
   props<{ rolls: number[][] }>()
@@ -11,7 +14,7 @@ export const cheatDie = createAction(
 );
 export const submitScore = createAction(
   '[Dice] Submit Score',
-  props<{ scoreRow: string }>()
+  props<{ scoreRow: string, practice: boolean }>()
 );
 
 export const previewScore = createAction(

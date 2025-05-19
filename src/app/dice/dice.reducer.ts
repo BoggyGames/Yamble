@@ -13,7 +13,11 @@ function randomRoll() {
   return Math.floor(Math.random() * 6) + 1;
 }
 
-const defaultRolls = Array.from({ length: 13 }, () => [randomRoll(),randomRoll(),randomRoll(),randomRoll(),randomRoll(),randomRoll()]); //ovo će bude loaded sa servera kad nije practice
+function generateRolls() {
+  return Array.from({ length: 13 }, () => [randomRoll(),randomRoll(),randomRoll(),randomRoll(),randomRoll(),randomRoll()]);
+}
+
+const defaultRolls = generateRolls(); //ovo će bude loaded sa servera kad nije practice
 export const initialState: DiceState = {
   rolls: defaultRolls,
   currentRollIdx: 0,
@@ -29,8 +33,9 @@ export function scoreRow(row: string, dice: number[]): number {
     case 'Ones': case 'Twos': case 'Threes': case 'Fours': case 'Fives': case 'Sixes': {
       const numMap: Record<string,number> = { Ones:1, Twos:2, Threes:3, Fours:4, Fives:5, Sixes:6 };
       const n = numMap[row];
+
       //alert(row);
-      return (counts[n] || 0) * n;
+      return (Math.min(counts[n], 5) || 0) * n;
     }
     case 'Minimum': //min
       return [...dice].sort((a,b)=>a-b).slice(0,5).reduce((s,v)=>s+v, 0);
@@ -93,13 +98,13 @@ export function totalsCount(rows: any, type: number): number {
   const set3 = (rows["3-of-a-Kind"] ?? 0) + (rows["Straight"] ?? 0) + (rows["Full House"] ?? 0) + (rows["4-of-a-Kind"] ?? 0) + (rows["Yamb"] ?? 0)
   switch (type) {
     case 1:
-      return (rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0 || rows["Sixes"] >= 0) ? set1 : -1;
+      return (rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0 || rows["Sixes"] >= 0) ? set1 : -9999;
     case 2:
-      return (rows["Ones"] >= 0 && rows["Minimum"] >= 0 && rows["Maximum"] >= 0) ? set2 : -1;
+      return (rows["Ones"] >= 0 && rows["Minimum"] >= 0 && rows["Maximum"] >= 0) ? set2 : -9999;
     case 3:
-      return (rows["3-of-a-Kind"] >= 0 || rows["Straight"] || rows["Full House"] || rows["4-of-a-Kind"] || rows["Yamb"]) ? set3 : -1;
+      return (rows["3-of-a-Kind"] >= 0 || rows["Straight"] >= 0 || rows["Full House"] >= 0 || rows["4-of-a-Kind"] >= 0 || rows["Yamb"] >= 0) ? set3 : -9999;
     case 0:
-      return ((rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0 || rows["Sixes"] >= 0) ? set1 : 0) + ((rows["Ones"] >= 0 && rows["Minimum"] >= 0 && rows["Maximum"] >= 0) ? set2 : 0) + ((rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0) ? set3 : 0);
+      return ((rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0 || rows["Sixes"] >= 0) ? set1 : 0) + ((rows["Ones"] >= 0 && rows["Minimum"] >= 0 && rows["Maximum"] >= 0) ? set2 : 0) + ((rows["3-of-a-Kind"] >= 0 || rows["Straight"] >= 0 || rows["Full House"] >= 0 || rows["4-of-a-Kind"] >= 0 || rows["Yamb"] >= 0) ? set3 : 0);
     default:
       return -1;
   }
@@ -107,6 +112,7 @@ export function totalsCount(rows: any, type: number): number {
 
 export const diceReducer = createReducer(
   initialState,
+
   on(DiceActions.cheatDie, (state, { rollIndex, dieIndex, newValue }) => state.cheatLeft == 0 ? ({ //ako nema cheats, vrati isto stanje logicno
     ...state,
     cheatLeft: state.cheatLeft,
@@ -118,7 +124,8 @@ export const diceReducer = createReducer(
       i === rollIndex ? r.map((d,j) => j===dieIndex ? newValue : d) : r
     )
   })),
-  on(DiceActions.submitScore, (state, { scoreRow: row }) => {
+
+  on(DiceActions.submitScore, (state, { scoreRow: row, practice: practiceMode }) => {
     const dice = state.rolls[state.currentRollIdx];
     const score = scoreRow(row, dice);
     const newState = {
@@ -126,13 +133,33 @@ export const diceReducer = createReducer(
       usedRows: { ...state.usedRows, [row]: score}
     }
     //alert(score);
-    return {
+    const submit = {
       ...newState,
       usedRows: { ...newState.usedRows, ["∑ 1 (+30 if >= 60)"]: totalsCount(newState.usedRows, 1),  ["∑ 2 ((Max-Min)*Ones)"]: totalsCount(newState.usedRows, 2), ["∑ 3"]: totalsCount(newState.usedRows, 3), ["∑ Total"]: totalsCount(newState.usedRows, 0)},
       currentRollIdx: state.currentRollIdx + 1,
       cheatLeft: state.cheatLeft
     };
+
+    if (submit.currentRollIdx == 13) {
+      //submit the score to da leaderboard!! do it!! hurry!!!!! samo sto jos nemamo liderbord (todo :))
+    }
+
+    //if(!practiceMode)
+    //  localStorage.setItem("dailyRound", JSON.stringify(state));
+
+    return submit;
   }),
+
+  on(DiceActions.reset, (state) => {
+    return {
+      rolls: generateRolls(),
+      preview: 0,
+      usedRows: {},
+      currentRollIdx: 0,
+      cheatLeft: 6
+    };
+  }),
+
   on(DiceActions.previewScore, (state, { scoreRow: row }) => {
     const dice = state.rolls[state.currentRollIdx];
     const score = scoreRow(row, dice);
