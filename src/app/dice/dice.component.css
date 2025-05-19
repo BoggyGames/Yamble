@@ -6,10 +6,10 @@
      flex: 0 1 auto;
      font-family: "Bahnschrift", sans-serif;
     }
-.dice-panel { display: flex; flex-direction: column; align-items: center; }
+.dice-panel { display: flex; width: 205px; flex-direction: column; align-items: center; }
 .cheats-left { margin-bottom: 1rem; font-weight: bold; }
 .dice-row { display: flex; flex-wrap: wrap; gap: 1rem; }
-.die-wrapper { position: relative; }
+.die-wrapper { position: relative; margin-left: 3px; margin-right: 3px; }
 svg.selected { transform: scale(1.1); }
 .radial-menu {
     pointer-events: none;
@@ -32,6 +32,31 @@ svg.selected { transform: scale(1.1); }
 .radial-menu button:nth-child(5) { bottom: 15px; left: 0; }
 .radial-menu button:nth-child(6) { top: 15px; left: 0; }
 
+.final-score {
+    font-family: "Bahnschrift", sans-serif;
+    text-align: center;
+}
+
+.final-btn {
+    width: 150px;
+    background-color: #b163d8;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 20px;
+}
+
+.final-btn:hover {
+    background-color: #641e92;
+    color: white;
+}
+
+.final-btn:active {
+    background-color: #52127c;
+    color: rgb(192, 159, 179);
+}
+
 svg {
     border-radius: 7px;
 }
@@ -46,7 +71,40 @@ tr:nth-child(odd) {
     height: 30px;
 }
 
+tr:nth-child(7) {
+    background-color: #c293da;
+    height: 40px;
+}
+tr:nth-child(10) {
+    background-color: #c293da;
+    height: 40px;
+}
+tr:nth-child(16) {
+    background-color: #c293da;
+    height: 40px;
+}
+tr:nth-child(17) {
+    background-color: #4d1779;
+    color: white;
+    height: 40px;
+}
+
+td:nth-child(1) {
+    padding-left: 5px;
+    width: 200px;
+}
+td:nth-child(2) {
+    text-align: center;
+    width: 100px;
+}
+
+td:nth-child(2):hover {
+    background-color: #b163d8;
+}
 
 table {
-    
+    margin-right: 60px; /*ocemo da ovo bude unselectable, da nema onaj cudan cursor kad submitujes*/
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }

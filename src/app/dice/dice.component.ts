@@ -21,7 +21,9 @@ import { DiceState, scoreRow } from './dice.reducer';
 })
 export class DiceComponent {
   state$: Observable<DiceState>;
-  selectedDie: number | null = null;
+  selectedDie: number | null = null; //kliknuta kockica :)
+  hoveredRow: string | null = null; //turen mis na red :)
+  wouldScore: any;
 
   constructor(private store: Store<{ dice: DiceState }>) {
     this.state$ = this.store.pipe(select('dice'));
@@ -36,8 +38,35 @@ export class DiceComponent {
     this.selectedDie = null;
   }
 
-  onSubmit(row: string) {
-    this.store.dispatch(DiceActions.submitScore({ scoreRow: row }));
+  clipboard(a: any) {
+    navigator.clipboard.writeText("🎲 I scored " + a["∑ Total"] + " points at Yamble today - dare to challenge me?\nhttps://www.boggy.dev/");
+  }
+
+  onHover(row: string, used: any) {
+    if(row.startsWith("∑"))
+      return;
+    if (!(used[row] >= 0)) {
+      this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
+      this.hoveredRow = row;
+    }
+    //alert(row);
+    //this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
+  }
+  onUnhover(row: string) {
+    //if(row.startsWith("∑"))
+    //  return;
+    if (this.hoveredRow === row)
+      this.hoveredRow = null;
+    //this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
+  }
+
+  onSubmit(row: string, used: any) {
+    if(row.startsWith("∑"))
+      return;
+    if (!(used[row] >= 0))
+      //alert("huh?")
+      this.store.dispatch(DiceActions.submitScore({ scoreRow: row }));
+    //console.log(used);
   }
 
   getDotPositions(die: number): { x: number; y: number }[] { //ovo crta svgove

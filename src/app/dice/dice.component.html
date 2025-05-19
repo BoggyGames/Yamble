@@ -1,10 +1,11 @@
 <ng-container *ngIf="state$ | async as st">
     <div class="game-layout">
       <table class="score-table">
-        <tr *ngFor="let row of ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total']"
-            (click)="onSubmit(row)">
+        <tr *ngFor="let row of ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total']">
           <td>{{ row }}</td>
-          <td>{{ st.usedRows[row] || '-' }}</td>
+          <td (click)="onSubmit(row, st.usedRows)"
+          (mouseenter)="onHover(row, st.usedRows)"
+          (mouseleave)="onUnhover(row)">{{ hoveredRow === row ? st.preview : (st.usedRows[row] >= 0 ? st.usedRows[row] : '') }}</td>
         </tr>
       </table>
   
@@ -23,6 +24,12 @@
             <div *ngIf="selectedDie === i" @menuToggle class="radial-menu">
               <button *ngFor="let v of [1,2,3,4,5,6]" (click)="onCheat(st.currentRollIdx, i, v)">{{ v }}</button>
             </div>
+          </div>
+          <div *ngIf="st.currentRollIdx == 13" class="final-score">
+            <h1>{{ st.usedRows["∑ Total"] >= 300 ? "Well done!" : "Better luck next time..." }}</h1>
+            <p>Your total was <b>{{st.usedRows["∑ Total"]}}</b> - share it with your friends!<br>Thanks for playing today!</p>
+            <button class="final-btn" (click)="clipboard(st.usedRows)">Share (to clipboard)</button>
+            <button class="final-btn">Practice Mode</button>
           </div>
         </div>
       </div>
