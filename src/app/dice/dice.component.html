@@ -1,4 +1,4 @@
-<ng-container *ngIf="state$ | async as st">
+<ng-container class="dicebody" *ngIf="state$ | async as st">
     <div class="game-layout">
       <table class="score-table">
         <tr *ngFor="let row of ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total']">
@@ -14,7 +14,10 @@
         <div class="dice-row">
           <div *ngFor="let die of st.rolls[st.currentRollIdx]; let i = index" class="die-wrapper">
             <svg (click)="onDieClick(i)"
+                (mouseenter)="dieEnter(i)"
+                (mouseleave)="dieLeave(i)"
                  [class.selected]="selectedDie===i"
+                 [class.hovered]="hoveredDie===i"
                  width="50" height="50" viewBox="0 0 100 100">
               <rect width="100" height="100" rx="15" ry="15" fill="white" stroke="#333" stroke-width="10" />
               <circle *ngFor="let p of getDotPositions(die)"

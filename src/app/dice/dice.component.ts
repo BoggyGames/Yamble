@@ -15,16 +15,17 @@ import { DiceState, scoreRow } from './dice.reducer';
   animations: [
     trigger('menuToggle', [
       transition(':enter', [ style({ transform: 'translate(-50%, -50%) scale(0)' }), animate('150ms ease-out', style({ transform: 'translate(-50%, -50%) scale(1)' })) ]),
-      transition(':leave', [ animate('150ms ease-in', style({ transform: 'translate(-50%, -50%) scale(0)' })) ])
+      transition(':leave', [ style({ transform: 'translate(-50%, -50%) scale(1)' }), animate('150ms ease-in', style({ transform: 'translate(-50%, -50%) scale(0)' })) ])
     ])
   ]
 })
 export class DiceComponent {
   state$: Observable<DiceState>;
   selectedDie: number | null = null; //kliknuta kockica :)
+  hoveredDie: number | null = null; //turen mis na kockicu :)
   hoveredRow: string | null = null; //turen mis na red :)
   wouldScore: any;
-  practiceMode: boolean = false;
+  practiceMode: boolean = false; //nije dozvoljeno da submitujes score sa practice run, samo dailies
 
   constructor(private store: Store<{ dice: DiceState }>) {
     this.state$ = this.store.pipe(select('dice'));
@@ -64,6 +65,16 @@ export class DiceComponent {
     if (this.hoveredRow === row)
       this.hoveredRow = null;
     //this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
+  }
+
+  dieEnter(index: number) {
+    //potential todo: effect on hover
+    this.hoveredDie = index;
+  }
+  dieLeave(index: number) {
+    //potential todo: effect on hover
+    if (this.hoveredDie === index)
+      this.hoveredDie = null;
   }
 
   onSubmit(row: string, used: any) {

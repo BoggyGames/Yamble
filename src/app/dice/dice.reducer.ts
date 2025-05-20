@@ -117,9 +117,9 @@ export const diceReducer = createReducer(
     ...state,
     cheatLeft: state.cheatLeft,
     rolls: state.rolls
-  }) : ({ //ako ima, zameni mu kockicu ko sto trazi :)
+  }) : ({ //ako ima, zameni mu kockicu ko sto trazi :) nemoj da smanjujes br cheats ako je kliknuo istu brojku!!!!
     ...state,
-    cheatLeft: state.cheatLeft - 1,
+    cheatLeft: state.cheatLeft - (state.rolls[rollIndex][dieIndex] == newValue ? 0 : 1),
     rolls: state.rolls.map((r, i) =>
       i === rollIndex ? r.map((d,j) => j===dieIndex ? newValue : d) : r
     )
