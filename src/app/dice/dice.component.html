@@ -1,11 +1,12 @@
 <ng-container class="dicebody" *ngIf="state$ | async as st">
     <div class="game-layout">
       <table class="score-table">
-        <tr *ngFor="let row of ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total']">
+        <tr *ngFor="let row of allRows">
           <td>{{ row }}</td>
-          <td (click)="onSubmit(row, st.usedRows)"
+          <td [class.bonus]="inputRows[st.currentRollIdx] === row" [class.preview]="!(st.usedRows[row] >= -200)"
+          (click)="onSubmit(row, st.usedRows)"
           (mouseenter)="onHover(row, st.usedRows)"
-          (mouseleave)="onUnhover(row)">{{ hoveredRow === row ? st.preview : (st.usedRows[row] >= -200 ? st.usedRows[row] : '') }}</td>
+          (mouseleave)="onUnhover(row)">{{ (st.usedRows[row] >= -200 ? st.usedRows[row] : st.previews[row]) }}</td>
         </tr>
       </table>
   

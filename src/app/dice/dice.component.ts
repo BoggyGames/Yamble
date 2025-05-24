@@ -26,7 +26,8 @@ export class DiceComponent {
   hoveredRow: string | null = null; //turen mis na red :)
   wouldScore: any;
   practiceMode: boolean = false; //nije dozvoljeno da submitujes score sa practice run, samo dailies
-
+  allRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total'];
+  inputRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','Minimum','Maximum','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb']; //bez sume
   constructor(private store: Store<{ dice: DiceState }>) {
     this.state$ = this.store.pipe(select('dice'));
   }
@@ -49,21 +50,27 @@ export class DiceComponent {
     this.store.dispatch(DiceActions.reset());
   }
 
+  previewLine(row: string) {
+
+  }
+
+  //onHover & onUnhover su deprecated - ce prikazujemo preview za sve kolone, da bi bilo mobile-friendly
+
   onHover(row: string, used: any) {
-    if(row.startsWith("∑"))
-      return;
-    if (!(used[row] >= 0)) {
-      this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
-      this.hoveredRow = row;
-    }
+    //if(row.startsWith("∑"))
+    //  return;
+    //if (!(used[row] >= 0)) {
+    //  this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
+    //  this.hoveredRow = row;
+    //}
     //alert(row);
     //this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
   }
   onUnhover(row: string) {
     //if(row.startsWith("∑"))
     //  return;
-    if (this.hoveredRow === row)
-      this.hoveredRow = null;
+    //if (this.hoveredRow === row)
+    //  this.hoveredRow = null;
     //this.store.dispatch(DiceActions.previewScore({ scoreRow: row }));
   }
 

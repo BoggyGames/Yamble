@@ -15,7 +15,14 @@
      padding: 10px;
      background-color: #d5cae2;
  }
-.cheats-left { margin-bottom: 1rem; font-weight: bold; }
+.cheats-left { 
+    margin-bottom: 1rem;
+    font-weight: bold;
+    font-size: 20px;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
 .dice-row { display: flex; flex-wrap: wrap; gap: 1rem; }
 .die-wrapper { position: relative; margin-left: 3px; margin-right: 3px; }
 svg.selected { transform: scale(1.1); }
@@ -110,10 +117,24 @@ td:nth-child(1) {
 td:nth-child(2) {
     text-align: center;
     width: 100px;
+    font-size: 18px;
+    padding-top: 3px;
+}
+
+td:nth-child(2).preview {
+    color: rgba(61, 54, 66, 0.486);
+}
+
+td:nth-child(2).bonus {
+    background-color: rgb(57, 235, 176);
 }
 
 td:nth-child(2):hover {
     background-color: #b163d8;
+}
+
+td:nth-child(2).bonus:hover {
+    background-color: rgb(35, 201, 145);
 }
 
 table {

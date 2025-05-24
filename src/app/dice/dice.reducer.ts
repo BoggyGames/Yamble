@@ -6,7 +6,7 @@ export interface DiceState {
   currentRollIdx: number; //na koji smo trenutno?
   cheatLeft: number; //kolko ostalo cheats?
   usedRows: Record<string, number>; //pamtimo redom
-  preview: number; //trenutni hovered preview, jedno samo treba da pamtimo to stanje jer korisnik ima 1 cursor :)
+  previews: Record<string, number>; //sve linije previewujemo (velika promena da bi bilo korisno mobile userima)
 }
 
 function randomRoll() {
@@ -21,9 +21,9 @@ const defaultRolls = generateRolls(); //ovo će bude loaded sa servera kad nije 
 export const initialState: DiceState = {
   rolls: defaultRolls,
   currentRollIdx: 0,
-  cheatLeft: 6,
+  cheatLeft: 4,
   usedRows: {},
-  preview: 0
+  previews: getPreviews(defaultRolls[0])
 };
 
 // Yamb poeni
@@ -110,6 +110,18 @@ export function totalsCount(rows: any, type: number): number {
   }
 }
 
+export function getPreviews(dice: number[]) : Record<string, number> {
+  let prevs = {};
+
+  const inputRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','Minimum','Maximum','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb']; //bez sume
+
+  inputRows.forEach(function(row) {
+    prevs = { ...prevs, [row]: scoreRow(row, dice)};
+  });
+
+  return prevs;
+}
+
 export const diceReducer = createReducer(
   initialState,
 
@@ -120,6 +132,9 @@ export const diceReducer = createReducer(
   }) : ({ //ako ima, zameni mu kockicu ko sto trazi :) nemoj da smanjujes br cheats ako je kliknuo istu brojku!!!!
     ...state,
     cheatLeft: state.cheatLeft - (state.rolls[rollIndex][dieIndex] == newValue ? 0 : 1),
+    previews: getPreviews(state.rolls.map((r, i) =>
+    i === rollIndex ? r.map((d,j) => j===dieIndex ? newValue : d) : r
+  )[(state.currentRollIdx)%13]),
     rolls: state.rolls.map((r, i) =>
       i === rollIndex ? r.map((d,j) => j===dieIndex ? newValue : d) : r
     )
@@ -132,12 +147,14 @@ export const diceReducer = createReducer(
       ...state,
       usedRows: { ...state.usedRows, [row]: score}
     }
+    const inputRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','Minimum','Maximum','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb']; //bez sume
     //alert(score);
     const submit = {
       ...newState,
       usedRows: { ...newState.usedRows, ["∑ 1 (+30 if >= 60)"]: totalsCount(newState.usedRows, 1),  ["∑ 2 ((Max-Min)*Ones)"]: totalsCount(newState.usedRows, 2), ["∑ 3"]: totalsCount(newState.usedRows, 3), ["∑ Total"]: totalsCount(newState.usedRows, 0)},
       currentRollIdx: state.currentRollIdx + 1,
-      cheatLeft: state.cheatLeft
+      cheatLeft: state.cheatLeft + (row === inputRows[state.currentRollIdx] ? 1 : 0),
+      previews: getPreviews(state.rolls[(state.currentRollIdx+1)%13])
     };
 
     if (submit.currentRollIdx == 13) {
@@ -151,21 +168,24 @@ export const diceReducer = createReducer(
   }),
 
   on(DiceActions.reset, (state) => {
+
+    const newRolls = generateRolls();
+
     return {
-      rolls: generateRolls(),
-      preview: 0,
+      rolls: newRolls,
+      previews: getPreviews(newRolls[0]),
       usedRows: {},
       currentRollIdx: 0,
-      cheatLeft: 6
+      cheatLeft: 4
     };
   }),
 
   on(DiceActions.previewScore, (state, { scoreRow: row }) => {
     const dice = state.rolls[state.currentRollIdx];
-    const score = scoreRow(row, dice);
+    const score = getPreviews(dice);
     return {
       ...state,
-      preview: score
+      previews: score
     };
   })
 );
