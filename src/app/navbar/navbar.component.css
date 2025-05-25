@@ -1,0 +1,39 @@
+.navbar {
+    font-size: 15px;
+    font-family: "Bahnschrift", sans-serif;
+    margin: 0;
+    padding: 0;
+
+}
+
+.ybl {
+    margin-top: 8px;
+}
+
+ul {
+    list-style-type: none;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 25px;
+    overflow: hidden;
+    background-color: #333;
+    box-shadow: #4d177977 0px 5px 5px;
+  }
+  
+  li {
+    float: left;
+  }
+  
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  /* Change the link color to #111 (black) on hover */
+  li a:hover {
+    background-color: #111;
+  }

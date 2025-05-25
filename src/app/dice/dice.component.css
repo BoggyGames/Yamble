@@ -137,6 +137,12 @@ td:nth-child(2).bonus:hover {
     background-color: rgb(35, 201, 145);
 }
 
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
 table {
     margin-right: 60px; /*ocemo da ovo bude unselectable, da nema onaj cudan cursor kad submitujes*/
     -webkit-user-select: none; /* Safari */
