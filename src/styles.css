@@ -4,6 +4,11 @@ body, html {
     padding: 0;
     height: 100%;
   }
+
+  body {
+    background-image: url("/assets/images/yambledice.png");
+    background-repeat: repeat;
+  }
   
   app-root {
     display: flex;

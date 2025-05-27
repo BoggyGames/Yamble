@@ -33,8 +33,10 @@
           </div>
           <div *ngIf="st.currentRollIdx == 13" class="final-score">
             <h1>{{ st.usedRows["∑ Total"] >= 300 ? "Well done!" : "Better luck next time..." }}</h1>
+            <img *ngIf="st.usedRows['∑ Total'] >= 300" [src]="'assets/images/lambda-win.png'" alt="Lambda cheering">
+            <img *ngIf="st.usedRows['∑ Total'] < 300" [src]="'assets/images/lambda-lose.png'" alt="Lambda falling">
             <p>Your total was <b>{{st.usedRows["∑ Total"]}}</b> - share it with your friends!<br>Thanks for playing today!</p>
-            <button *ngIf="practiceMode === false" class="final-btn" (click)="clipboard(st.usedRows)">Share (to clipboard)</button>
+            <button *ngIf="false === false" class="final-btn" (click)="clipboard(st.usedRows)">Share (to clipboard)</button>
             <button class="final-btn" (click)="practice()">Practice Mode</button>
           </div>
         </div>

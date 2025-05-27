@@ -1,0 +1,43 @@
+<div class="about-layout">
+    <div class="help-panel">
+        <h1>How to play Yamble</h1>
+        <h2>The Goal</h2>
+        <img [src]="'assets/images/lambda-full.png'" alt="Lambda, Yamble's mascot">
+        <p><i>pictured: Lambda, Yamble's mascot</i></p>
+        <p>Yamble is a daily puzzle inspired by Yamb, the Balkan version of the game Yahtzee with several variations to its ruleset and rows.
+        <br>The goal each day is to beat Lambda's score of 300 points - and alternatively, climb to the top of the daily leaderboard!<br>
+        During the daily game, every player is given the <b>same exact set of dice rolls</b> so the playing field is always completely fair.<br>
+        Greyed out previews of scores for each empty row are given to you so you can see what your current roll scores in a certain row.</p>
+        <h2>"Cheats"</h2>
+        <p>Cheats are your main way of beating the odds and scoring as much as possible - at any given time, you can use a cheat to
+        <b>change the value of one of your dice</b> by clicking on it and selecting a different number.<br>You start with 4 cheats, and
+        are able to earn more by submitting into <b>highlighted green rows</b>, which look like <span class="highlight">this</span> and earn you +1 cheat.<br>
+        Highlighted rows start from Ones and go down the rows one by one.
+        </p>
+        <h2>Scoring</h2>
+        <p>All of the rows in Yamble behave like their usual Yamb counterparts, right down to how the totals are scored.<br>
+        This is a comprehensive list of how the rows behave:</p>
+        <ul>
+            <li>Ones - Adds up all the 1s you have, up to a maximum of five. NOTE: This number multiplies the max-min difference in Sum 2!</li>
+            <li>Twos - Adds up all the 2s you have, up to a maximum of five.</li>
+            <li>Threes - Adds up all the 3s you have, up to a maximum of five.</li>
+            <li>Fours - Adds up all the 4s you have, up to a maximum of five.</li>
+            <li>Fives - Adds up all the 5s you have, up to a maximum of five.</li>
+            <li>Sixes - Adds up all the 6s you have, up to a maximum of five.</li>
+            <br>
+            <li>Minimum - Adds up the lowest 5 dice values you have.</li>
+            <li>Maximum - Adds up the highest 5 dice values you have.</li>
+            <br>
+            <li>3-of-a-Kind - If you have 3 of the same die, 20 + their sum. Otherwise, 0.</li>
+            <li>Straight - If you have 1, 2, 3, 4, 5 or 2, 3, 4, 5, 6, this scores 66. Otherwise, 0.</li>
+            <li>Full House - If you have 3 of the same die and 2 of another, 30 + their sums. Otherwise, 0.</li>
+            <li>4-of-a-Kind - If you have 4 of the same die, 40 + their sum. Otherwise, 0.</li>
+            <li>Yamb - The ultimate row. If you have 5 of the same die, 50 + their sum. Otherwise, 0.</li>
+            <br>
+            <li>Sum 1 - Sums up the first section, with a bonus of 30 if their sum is 60 or above.</li>
+            <li>Sum 2 - The difference between Maximum and Minimum, multiplied by the Ones row.</li>
+            <li>Sum 3 - Sums up the third section.</li>
+            <li>Sum Total - Sum of all 3 partial sums. Your final score!</li>
+        </ul>
+    </div>
+</div>

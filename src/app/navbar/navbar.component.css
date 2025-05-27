@@ -18,7 +18,7 @@ ul {
     margin-bottom: 25px;
     overflow: hidden;
     background-color: #333;
-    box-shadow: #4d177977 0px 5px 5px;
+    box-shadow: #2907449d 0px 5px 5px;
   }
   
   li {
@@ -36,4 +36,5 @@ ul {
   /* Change the link color to #111 (black) on hover */
   li a:hover {
     background-color: #111;
+    color: rgb(91, 228, 143);
   }

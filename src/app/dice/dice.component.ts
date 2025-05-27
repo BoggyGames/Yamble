@@ -42,7 +42,7 @@ export class DiceComponent {
   }
 
   clipboard(a: any) {
-    navigator.clipboard.writeText("🎲 I scored " + a["∑ Total"] + " points at Yamble today - dare to challenge me?\nhttps://www.boggy.dev/");
+    navigator.clipboard.writeText("🎲 I scored " + a["∑ Total"] + " points at Yamble today - dare to challenge me?\nhttps://www.boggy.dev/yamble/");
   }
 
   practice() {
