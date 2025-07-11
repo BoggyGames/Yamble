@@ -1,6 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 
-export const loadRolls = createAction('[Dice] Load Rolls');
+export const loadRolls = createAction(
+  '[Dice] Load Rolls',
+  props<{ seed: number, mode: number }>()
+);
 
 export const reset = createAction('[Dice] Reset');
 

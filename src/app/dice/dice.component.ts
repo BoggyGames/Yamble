@@ -6,6 +6,22 @@ import { Observable } from 'rxjs';
 import * as DiceActions from './dice.actions';
 import { DiceState, scoreRow } from './dice.reducer';
 
+/*
+STILL TO-DO:
+
+-footer
+-mode choice
+-challenges
+-ocisti reducer code
+-efekti
+-prozirne tackice na kockice (molim te)
+-profile & auth
+-storage
+-leaderboards
+-badges
+
+*/
+
 @Component({
   selector: 'app-dice',
   standalone: true,

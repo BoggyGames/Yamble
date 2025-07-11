@@ -7,24 +7,56 @@ export interface DiceState {
   cheatLeft: number; //kolko ostalo cheats?
   usedRows: Record<string, number>; //pamtimo redom
   previews: Record<string, number>; //sve linije previewujemo (velika promena da bi bilo korisno mobile userima)
+  gamemode: number;
 }
 
-function randomRoll() {
-  return Math.floor(Math.random() * 6) + 1;
+function mulberry32(a: number) {
+  return function() {
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
 }
 
-function generateRolls() {
-  return Array.from({ length: 13 }, () => [randomRoll(),randomRoll(),randomRoll(),randomRoll(),randomRoll(),randomRoll()]);
+function randomRoll(num: number) {
+  return Math.floor(num * 6) + 1;
 }
 
-const defaultRolls = generateRolls(); //ovo će bude loaded sa servera kad nije practice
+function generateRolls(seed: number) {
+  const getRand = mulberry32(seed);
+  return Array.from({ length: 13 }, () => [randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand())]);
+}
+
+const defaultRolls = generateRolls(123456); //ovo će bude loaded sa servera kad nije practice
 export const initialState: DiceState = {
   rolls: defaultRolls,
   currentRollIdx: 0,
   cheatLeft: 4,
   usedRows: {},
-  previews: getPreviews(defaultRolls[0])
+  previews: getPreviews(defaultRolls[0]),
+  gamemode: 0
 };
+
+/*
+
+0 Daily - Nothing
+
+1 Yamble or Nothing - a single 0 sets your total to 0 permanently
+
+2 By the Book - input your scores only into green rows, else total is 0
+
+3 Lambda's Trick - Sum2 is SUBTRACTED instead of added to your total
+
+4 Pillars of Wisdom - Sum1 is added to your total one more time
+
+5 Cheat Day - Start with an additional 3 cheats
+
+6 The Floor Is Acid - Gaining +1 cheats from green rows decreases your total by 50
+
+7 Fundraiser - Start with 0 cheats - green rows add +2 instead of +1
+
+*/
 
 // Yamb poeni
 export function scoreRow(row: string, dice: number[]): number {
@@ -90,7 +122,25 @@ export function scoreRow(row: string, dice: number[]): number {
 }
 
 //Yamb zbirovi tj totals
-export function totalsCount(rows: any, type: number): number {
+export function totalsCount(rows: any, type: number, gamemode: number): number {
+  const inputRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','Minimum','Maximum','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb'];
+
+  let greencount = 0;
+
+  const cleanedRows: Record<string, number> = Object.fromEntries(
+    Object.entries(rows).filter(([key]) => !key.includes('∑'))
+  ) as Record<string, number>;
+
+  for (let i = 0; i < Object.keys(cleanedRows).length; i++) {
+    if (Object.keys(cleanedRows)[i] === inputRows[i]) {
+      greencount++;
+    }
+  }
+
+  const hasZero = Object.values(cleanedRows).some(value => value === 0);
+
+  let greenpenalty = (gamemode === 6) ? 50 : 0;
+
   let set1 = (rows["Ones"] ?? 0) + (rows["Twos"] ?? 0) + (rows["Threes"] ?? 0) + (rows["Fours"] ?? 0) + (rows["Fives"] ?? 0) + (rows["Sixes"] ?? 0);
   if (set1 >= 60)
     set1 += 30;
@@ -104,7 +154,11 @@ export function totalsCount(rows: any, type: number): number {
     case 3:
       return (rows["3-of-a-Kind"] >= 0 || rows["Straight"] >= 0 || rows["Full House"] >= 0 || rows["4-of-a-Kind"] >= 0 || rows["Yamb"] >= 0) ? set3 : -9999;
     case 0:
-      return ((rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0 || rows["Sixes"] >= 0) ? set1 : 0) + ((rows["Ones"] >= 0 && rows["Minimum"] >= 0 && rows["Maximum"] >= 0) ? set2 : 0) + ((rows["3-of-a-Kind"] >= 0 || rows["Straight"] >= 0 || rows["Full House"] >= 0 || rows["4-of-a-Kind"] >= 0 || rows["Yamb"] >= 0) ? set3 : 0);
+      const basevalue = ((rows["Ones"] >= 0 || rows["Twos"] >= 0 || rows["Threes"] >= 0 || rows["Fours"] >= 0 || rows["Fives"] >= 0 || rows["Sixes"] >= 0) ? (gamemode === 4 ? 2*set1 : set1) : 0)
+      + ((rows["Ones"] >= 0 && rows["Minimum"] >= 0 && rows["Maximum"] >= 0) ? (gamemode === 3 ? -set2 : set2) : 0)
+      + ((rows["3-of-a-Kind"] >= 0 || rows["Straight"] >= 0 || rows["Full House"] >= 0 || rows["4-of-a-Kind"] >= 0 || rows["Yamb"] >= 0) ? set3 : 0);
+
+      return (((gamemode === 2) && (greencount < Object.keys(cleanedRows).length)) || ((gamemode === 1) && hasZero) ? 0 : basevalue - greenpenalty * greencount);
     default:
       return -1;
   }
@@ -151,14 +205,17 @@ export const diceReducer = createReducer(
     //alert(score);
     const submit = {
       ...newState,
-      usedRows: { ...newState.usedRows, ["∑ 1 (+30 if >= 60)"]: totalsCount(newState.usedRows, 1),  ["∑ 2 ((Max-Min)*Ones)"]: totalsCount(newState.usedRows, 2), ["∑ 3"]: totalsCount(newState.usedRows, 3), ["∑ Total"]: totalsCount(newState.usedRows, 0)},
+      usedRows: { ...newState.usedRows, ["∑ 1 (+30 if >= 60)"]: totalsCount(newState.usedRows, 1, state.gamemode),  ["∑ 2 ((Max-Min)*Ones)"]: totalsCount(newState.usedRows, 2, state.gamemode), ["∑ 3"]: totalsCount(newState.usedRows, 3, state.gamemode), ["∑ Total"]: totalsCount(newState.usedRows, 0, state.gamemode)},
       currentRollIdx: state.currentRollIdx + 1,
-      cheatLeft: state.cheatLeft + (row === inputRows[state.currentRollIdx] ? 1 : 0),
+      cheatLeft: state.cheatLeft + (row === inputRows[state.currentRollIdx] ? (state.gamemode === 7 ? 2 : 1) : 0),
       previews: getPreviews(state.rolls[(state.currentRollIdx+1)%13])
     };
 
-    if (submit.currentRollIdx == 13) {
+    if (submit.currentRollIdx == 13 && !practiceMode) {
       //submit the score to da leaderboard!! do it!! hurry!!!!! samo sto jos nemamo liderbord (todo :))
+
+      //ukloni ovaj print pre nego da pushujes bilo sta na production lmao
+      //console.log(submit);
     }
 
     //if(!practiceMode)
@@ -169,14 +226,29 @@ export const diceReducer = createReducer(
 
   on(DiceActions.reset, (state) => {
 
-    const newRolls = generateRolls();
+    const newRolls = generateRolls(123456);
 
     return {
       rolls: newRolls,
       previews: getPreviews(newRolls[0]),
       usedRows: {},
       currentRollIdx: 0,
-      cheatLeft: 4
+      cheatLeft: 4,
+      gamemode: 0
+    };
+  }),
+
+  on(DiceActions.loadRolls, (state, { seed: sd, mode: md }) => {
+
+    const newRolls = generateRolls(sd + ((md === 0) ? 0 : 1));
+
+    return {
+      rolls: newRolls,
+      previews: getPreviews(newRolls[0]),
+      usedRows: {},
+      currentRollIdx: 0,
+      cheatLeft: (md === 5) ? 7 : ((md === 7) ? 0 : 4),
+      gamemode: md
     };
   }),
 
