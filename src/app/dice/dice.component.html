@@ -1,7 +1,22 @@
 
 
 <ng-container class="dicebody" *ngIf="state$ | async as st">
-    <div class="game-layout">
+    <div class="screen-labels">
+      <p class="title-label">{{ title() }}</p>
+      <p class="desc-label">{{ description() }}</p>
+    </div>
+    <div class="start-buttons" *ngIf="!selected">
+      <div class="start-panel">
+        <img class="start-logo" [src]="'assets/images/yamblelogo2.png'" alt="Lambda, Yamble's mascot">
+        <button disabled class="final-btn starter" (click)="startGame(0)" *ngIf="!fetched">Daily</button>
+        <button class="final-btn starter" (click)="startGame(0)" *ngIf="fetched">Daily</button>
+        <p class="modedesc">The usual Yamble experience - play your dice right and aim for 1st place!</p>
+        <button disabled class="final-btn starter" (click)="startGame(1)" *ngIf="!fetched">Challenge</button>
+        <button class="final-btn starter" (click)="startGame(1)" *ngIf="fetched">Challenge</button>
+        <p class="modedesc">Play one of seven different challenge modes that rotate throughout the week!</p>
+      </div>
+    </div>
+    <div class="game-layout" *ngIf="selected">
       <table class="score-table">
         <tr *ngFor="let row of allRows">
           <td>{{ row }}</td>

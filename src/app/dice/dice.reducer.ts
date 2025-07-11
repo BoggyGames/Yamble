@@ -25,17 +25,23 @@ function randomRoll(num: number) {
 
 function generateRolls(seed: number) {
   const getRand = mulberry32(seed);
-  return Array.from({ length: 13 }, () => [randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand()),randomRoll(getRand())]);
+  return Array.from({ length: 13 }, () => [
+    randomRoll(getRand()),
+    randomRoll(getRand()),
+    randomRoll(getRand()),
+    randomRoll(getRand()),
+    randomRoll(getRand()),
+    randomRoll(getRand())]);
 }
 
-const defaultRolls = generateRolls(123456); //ovo će bude loaded sa servera kad nije practice
+const defaultRolls = generateRolls(192024743); //ovo će bude loaded sa servera kad nije practice
 export const initialState: DiceState = {
   rolls: defaultRolls,
   currentRollIdx: 0,
   cheatLeft: 4,
   usedRows: {},
   previews: getPreviews(defaultRolls[0]),
-  gamemode: 0
+  gamemode: 6
 };
 
 /*
@@ -218,9 +224,9 @@ export const diceReducer = createReducer(
       //console.log(submit);
     }
 
-    //if(!practiceMode)
-    //  localStorage.setItem("dailyRound", JSON.stringify(state));
-
+    if(!practiceMode) {
+      localStorage.setItem((state.gamemode > 0 ? "challRound" : "dailyRound"), JSON.stringify(submit));
+    }
     return submit;
   }),
 
@@ -250,6 +256,10 @@ export const diceReducer = createReducer(
       cheatLeft: (md === 5) ? 7 : ((md === 7) ? 0 : 4),
       gamemode: md
     };
+  }),
+
+  on(DiceActions.loadState, (state, { oldState: old }) => {
+    return old;
   }),
 
   on(DiceActions.previewScore, (state, { scoreRow: row }) => {

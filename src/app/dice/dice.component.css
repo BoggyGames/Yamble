@@ -7,10 +7,72 @@
     align-items: flex-start;
     gap: 1rem;
 }
+.screen-labels {
+    text-align: center;
+    color: #d5cae2;
+}
+.starter {
+    height: 50px;
+    margin-bottom: 0px;
+}
+.modedesc {
+    text-align: center;
+    color: #d5cae2;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 2px;
+    margin-bottom: 10px;
+}
+.start-logo {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.desc-label {
+    margin-top: 1px;
+    margin-bottom: 3px;
+}
+.title-label {
+    font-size: 20px;
+    text-shadow: 0 0 2px #d5cae2b0, 0 0 4px #d5cae294, 0 0 6px #d5cae259;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
 .score-table {
      flex: 0 1 auto;
      font-family: "Bahnschrift", sans-serif;
     }
+.start-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.start-panel {
+    position: relative; /* allow ::before to position absolutely inside */
+    width: 332px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .start-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0; /* shorthand for top: 0; right: 0; bottom: 0; left: 0 */
+    background-image: url("../../assets/images/yambleboard.png");
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: 0; /* behind the content */
+  }
+  
+  .start-panel > * {
+    position: relative;
+    z-index: 1; /* bring buttons above ::before */
+  }
 .dice-panel {
      display: flex; width: 205px;
      flex-direction: column;

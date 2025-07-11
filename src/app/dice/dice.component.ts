@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NgIf, NgForOf, AsyncPipe } from '@angular/common';
 import { Store, select } from '@ngrx/store';
@@ -35,7 +35,7 @@ STILL TO-DO:
     ])
   ]
 })
-export class DiceComponent {
+export class DiceComponent implements OnInit {
   state$: Observable<DiceState>;
   selectedDie: number | null = null; //kliknuta kockica :)
   hoveredDie: number | null = null; //turen mis na kockicu :)
@@ -44,8 +44,26 @@ export class DiceComponent {
   practiceMode: boolean = false; //nije dozvoljeno da submitujes score sa practice run, samo dailies
   allRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','∑ 1 (+30 if >= 60)','Minimum','Maximum','∑ 2 ((Max-Min)*Ones)','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb','∑ 3', '∑ Total'];
   inputRows = ['Ones','Twos','Threes','Fours','Fives','Sixes','Minimum','Maximum','3-of-a-Kind','Straight','Full House','4-of-a-Kind','Yamb']; //bez sume
+
+  fetchTarget = "";
+  fetched: boolean = false;
+  selected: boolean = false;
+
+  todaysSeed = 0;
+  todaysDate: string = "2025-07-03";
+  modeClicked: number = 0;
+  todaysMode: number = 1;
+
   constructor(private store: Store<{ dice: DiceState }>) {
     this.state$ = this.store.pipe(select('dice'));
+  }
+
+  ngOnInit(): void {
+    this.fetchRolls();
+  }
+
+  getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
   }
 
   onDieClick(idx: number) {
@@ -58,16 +76,138 @@ export class DiceComponent {
   }
 
   clipboard(a: any) {
-    navigator.clipboard.writeText("🎲 I scored " + a["∑ Total"] + " points at Yamble today - dare to challenge me?\nhttps://www.boggy.dev/yamble/");
+    navigator.clipboard.writeText((this.practiceMode ? "PRACTICE " : this.todaysDate + " ") + (this.modeClicked === 0 ? "DAILY" : "CHALLENGE") + " 🎲 I scored " + a["∑ Total"] + " points at Yamble today - dare to challenge me?\nhttps://www.boggy.dev/yamble/");
   }
 
   practice() {
     this.practiceMode = true;
-    this.store.dispatch(DiceActions.reset());
+    this.store.dispatch(DiceActions.loadRolls({ seed : this.getRandomInt(12345600), mode : this.modeClicked * (1 + this.getRandomInt(7))}));
   }
 
   previewLine(row: string) {
 
+  }
+
+  async fetchRolls() {
+    const currentUrl = window.location.href;
+    
+    let fetchTarget = "";
+
+    if(currentUrl.includes("localhost")) {
+      fetchTarget = "http://localhost:3000"
+    }
+    else {
+      fetchTarget = "https://api.boggy.dev";
+    }
+
+    //console.log(fetchTarget);
+
+    const fdata: any = (await fetch(fetchTarget + "/dicerolls", {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      //body: JSON.stringify(data),
+    }));
+    const data = await fdata.json();
+    //console.log(data);
+    this.todaysDate = data.rollDate;
+    this.todaysSeed = data.randomSeed;
+    this.todaysMode = (new Date(this.todaysDate + 'T00:00:00Z')).getUTCDay();
+
+    this.fetched = true;
+
+  }
+
+  title() {
+    if (!this.selected) {
+      return "Welcome to Yamble!"
+    }
+    let challname = "";
+
+    switch(this.todaysMode * this.modeClicked) {
+      case 0:
+        return "Yamble - " + (this.practiceMode ? "Practice Mode" : this.todaysDate)
+      case 1:
+        challname = "Yamble or Nothing";
+        break;
+      case 2:
+        challname = "By the Book";
+        break;
+      case 3:
+        challname = "Lambda's Trick";
+        break;
+      case 4:
+        challname = "Pillars of Wisdom";
+        break;
+      case 5:
+        challname = "Cheat Day";
+        break;
+      case 6:
+        challname = "The Floor is Acid";
+        break;
+      case 7:
+        challname = "Fundraiser";
+        break;
+    }
+
+    return (this.practiceMode ? "Practice - " : "Challenge - ") + challname;
+  }
+
+  description() {
+    if (!this.selected) {
+      return "Select a gamemode to play!"
+    }
+
+    let challname = "";
+
+    switch(this.todaysMode * this.modeClicked) {
+      case 0:
+        return "";
+      case 1:
+        challname = "A single submitted 0 sets your TOTAL to 0 permanently!";
+        break;
+      case 2:
+        challname = "Input your rolls ONLY into green rows - else, your TOTAL is 0!";
+        break;
+      case 3:
+        challname = "Sum 2 is SUBTRACTED instead of added to your TOTAL!";
+        break;
+      case 4:
+        challname = "Sum 1 is added to your TOTAL an additional time!";
+        break;
+      case 5:
+        challname = "You start with +3 bonus cheats!";
+        break;
+      case 6:
+        challname = "Inputting rolls into green rows also takes 50 points away from your TOTAL!";
+        break;
+      case 7:
+        challname = "You start with 0 cheats - but earn twice as many cheats from green rows!";
+        break;
+    }
+
+    return challname;
+  }
+
+  startGame(mode: number) {
+    this.practiceMode = false;
+    this.modeClicked = mode;
+    this.selected = true;
+    const dateOld = localStorage.getItem((mode === 0 ? "dailyDate" : "challDate"));
+
+    if (!dateOld) this.store.dispatch(DiceActions.loadRolls({ seed: this.todaysSeed, mode: mode * this.todaysMode }));
+    else {
+      if (dateOld === this.todaysDate) {
+        //load your old save data!!
+        const stateOld = localStorage.getItem((mode === 0 ? "dailyRound" : "challRound"));
+        if (stateOld) {
+          this.store.dispatch(DiceActions.loadState({ oldState: JSON.parse(stateOld) }));
+        }
+      }
+      else this.store.dispatch(DiceActions.loadRolls({ seed: this.todaysSeed, mode: mode * this.todaysMode }));
+    }
+    
   }
 
   //onHover & onUnhover su deprecated - ce prikazujemo preview za sve kolone, da bi bilo mobile-friendly
@@ -103,10 +243,11 @@ export class DiceComponent {
   onSubmit(row: string, used: any) {
     if(row.startsWith("∑"))
       return;
-    if (!(used[row] >= 0))
+    if (!(used[row] >= 0)) {
       //alert("huh?")
       this.store.dispatch(DiceActions.submitScore({ scoreRow: row, practice: this.practiceMode }));
-    //console.log(used);
+      if (!this.practiceMode) localStorage.setItem((this.modeClicked > 0 ? "challDate" : "dailyDate"), this.todaysDate);
+    }
   }
 
   getDotPositions(die: number): { x: number; y: number }[] { //ovo crta svgove

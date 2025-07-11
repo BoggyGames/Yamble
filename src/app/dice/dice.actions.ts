@@ -5,6 +5,11 @@ export const loadRolls = createAction(
   props<{ seed: number, mode: number }>()
 );
 
+export const loadState = createAction(
+  '[Dice] Load State',
+  props<{ oldState: any }>()
+);
+
 export const reset = createAction('[Dice] Reset');
 
 export const loadRollsSuccess = createAction(
