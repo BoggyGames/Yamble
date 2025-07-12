@@ -1,1 +1,15 @@
-<p>profile works!</p>
+<div class="prof-layout">
+    <div class="prof-panel">
+      <p class="user">{{ username }}</p>
+      <p class="wins">{{ "Wins: " + wins.toString() }}</p>
+      <p class="date">{{ "Account created on " + date.toString() }}</p>
+      <p class="badges">Badges:</p>
+        <div class="badge-item" *ngFor="let row of badgeList">
+            <img class="badge" [src]="'assets/images/badges/full' + row.label + '.png'">
+            <div class="badge-text">
+                <p class="badgename">{{ row.name }}</p>
+                <p class="badgedesc">{{ row.desc }}</p>
+              </div>
+        </div>
+    </div>
+  </div>

@@ -17,16 +17,6 @@
       </div>
     </div>
     <div class="game-layout" *ngIf="selected">
-      <table class="score-table">
-        <tr *ngFor="let row of allRows">
-          <td>{{ row }}</td>
-          <td [class.bonus]="inputRows[st.currentRollIdx] === row" [class.preview]="!(st.usedRows[row] >= -200)"
-          (click)="onSubmit(row, st.usedRows)"
-          (mouseenter)="onHover(row, st.usedRows)"
-          (mouseleave)="onUnhover(row)">{{ (st.usedRows[row] >= -200 ? st.usedRows[row] : st.previews[row]) }}</td>
-        </tr>
-      </table>
-  
       <div class="dice-panel">
         <div class="cheats-left">Cheats left: {{ st.cheatLeft }}</div>
         <div class="dice-row">
@@ -56,5 +46,14 @@
           </div>
         </div>
       </div>
+      <table class="score-table">
+        <tr *ngFor="let row of allRows">
+          <td>{{ row }}</td>
+          <td [class.bonus]="inputRows[st.currentRollIdx] === row" [class.preview]="!(st.usedRows[row] >= -200)"
+          (click)="onSubmit(row, st.usedRows)"
+          (mouseenter)="onHover(row, st.usedRows)"
+          (mouseleave)="onUnhover(row)">{{ (st.usedRows[row] >= -200 ? st.usedRows[row] : st.previews[row]) }}</td>
+        </tr>
+      </table>
     </div>
   </ng-container>

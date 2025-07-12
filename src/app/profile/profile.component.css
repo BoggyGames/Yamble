@@ -1,0 +1,72 @@
+.prof-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.prof-panel {
+    position: relative; /* allow ::before to position absolutely inside */
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 5px;
+    box-shadow: #290744 5px 5px 5px;
+    padding: 10px;
+    background-color: #d5cae2;
+  }
+
+.user {
+    font-size: 25px;
+    color: rgb(39, 10, 66);
+}
+
+.date {
+    opacity: 0.5;
+}
+
+p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.badge-item {
+    display: flex;
+    align-items: center;       /* vertically center the text block */
+    gap: 1rem;                 /* spacing between image and text */
+    margin-bottom: 1rem;       /* spacing between rows (optional) */
+  }
+  
+  .badge {
+    width: 64px;               /* or whatever size suits */
+    height: auto;
+    flex-shrink: 0;            /* prevent shrinking */
+  }
+  
+  .badgename,
+  .badgedesc {
+    margin: 0;
+  }
+
+  .badgename {
+    font-size: 18px;
+  }
+
+  .badgedesc {
+    opacity: 0.7;
+  }
+  
+  .badge-item > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* center text vertically relative to image */
+  }
+
+  .badge-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }

@@ -1,1 +1,28 @@
-<p>scores works!</p>
+<div class="slide-layout">
+    <button (click)="minusIt()" class="side-btn left">⬅</button>
+    <p class="title-label">Leaderboard</p>
+    <button (click)="plusIt()" class="side-btn right">➡</button>
+  </div>
+<div class="score-layout">
+    <table class="score-table">
+        <tr>
+            <td>Daily</td>
+            <td>Score</td>
+        </tr>
+      <tr *ngFor="let row of dailyRows">
+        <td><div class=profile-line><a [routerLink]="['/profile', row.profile.username]">{{ row.profile.username }}</a><img *ngFor="let badge of badgeListGen(row.profile.badges)" [src]="'assets/images/badges/' + badge + '.png'"></div></td>
+        <td>{{ row.score }}</td>
+      </tr>
+    </table>
+
+    <table class="score-table">
+        <tr>
+            <td>Challenge</td>
+            <td>Score</td>
+        </tr>
+        <tr *ngFor="let row of challRows">
+          <td><div class=profile-line><a [routerLink]="['/profile', row.profile.username]">{{ row.profile.username }}</a><img *ngFor="let badge of badgeListGen(row.profile.badges)" [src]="'assets/images/badges/' + badge + '.png'"></div></td>
+          <td>{{ row.score }}</td>
+        </tr>
+      </table>
+  </div>
