@@ -1,6 +1,7 @@
 <div class="prof-layout">
     <div class="prof-panel">
       <p class="user">{{ username }}</p>
+      <button *ngIf="loggedInHere" class="start-btn" (click)="logout()">Logout</button>
       <p class="wins">{{ "Wins: " + wins.toString() }}</p>
       <p class="date">{{ "Account created on " + date.toString() }}</p>
       <p class="badges">Badges:</p>

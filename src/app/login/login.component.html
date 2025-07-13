@@ -1,1 +1,12 @@
-<p>login works!</p>
+<div class="prof-layout">
+    <div class="prof-panel">
+      <p class="title">Login/Register</p>
+      <input *ngIf="!loggedIn" [(ngModel)]="username" class="username fieldy" placeholder="Username">
+      <input *ngIf="!loggedIn" [(ngModel)]="password" type="password" class="password fieldy" placeholder="Password">
+      <p class="msg">{{ loggedIn ? "You're already logged in!" : message}}</p>
+      <div class="btns">
+        <button *ngIf="!loggedIn" class="start-btn" (click)="login()">Login</button>
+        <button *ngIf="!loggedIn" class="start-btn" (click)="register()">Register</button>
+      </div>
+    </div>
+  </div>

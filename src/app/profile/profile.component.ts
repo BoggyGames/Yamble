@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf, NgForOf, AsyncPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -16,7 +17,9 @@ export class ProfileComponent implements OnInit {
   date = "1/1/1970";
   badgeList: any = null;
 
-  constructor(private route: ActivatedRoute) {}
+  loggedInHere = false;
+
+  constructor(private route: ActivatedRoute, private router: Router) {}
   
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -125,6 +128,13 @@ export class ProfileComponent implements OnInit {
     return list;
   }
 
+  logout() {
+    localStorage.removeItem("token");
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload();
+    });
+  }
+
   async fetchProfile() {
     const currentUrl = window.location.href;
     
@@ -153,5 +163,26 @@ export class ProfileComponent implements OnInit {
     this.date = data.created;
     this.badges = data.badges;
     this.badgeList = this.badgeListGen(this.badges);
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const fdata2: any = (await fetch(fetchTarget + "/verify", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      //body: JSON.stringify({ minus: this.minus, mode: 0 }),
+    }));
+    if (fdata2.status > 201) {
+      console.log("Whoopsies! ", fdata.status);
+      return;
+    }
+    const data2 = await fdata2.json();
+    //console.log(data);
+    if (data2.username === this.username) {
+      this.loggedInHere = true;
+    }
   }
 }

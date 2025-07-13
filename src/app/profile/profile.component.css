@@ -16,16 +16,38 @@
     border-radius: 5px;
     box-shadow: #290744 5px 5px 5px;
     padding: 10px;
-    background-color: #d5cae2;
+    color: #fff;
+    background-color: #9757e041;
   }
 
 .user {
     font-size: 25px;
-    color: rgb(39, 10, 66);
+    text-shadow: 0 0 2px #d5cae2b0, 0 0 4px #d5cae294, 0 0 6px #d5cae259;
+    color: rgb(242, 206, 245);
 }
 
 .date {
     opacity: 0.5;
+}
+
+.start-btn {
+  width: 90px;
+  background-color: #b163d8;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  font-family: "Bahnschrift", sans-serif;
+  font-size: 20px;
+}
+
+.start-btn:hover {
+  background-color: #641e92;
+  color: white;
+}
+
+.start-btn:active {
+  background-color: #52127c;
+  color: rgb(192, 159, 179);
 }
 
 p {

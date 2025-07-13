@@ -1,0 +1,27 @@
+.footer {
+    text-align: center;
+    background-color: #230c3d77;
+    box-shadow: #1b042e5e 0px -5px 5px;
+}
+
+p {
+    color: white;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.donate {
+    opacity: 0.7;
+}
+
+a {
+    color: rgb(128, 233, 198);
+    text-decoration: none;
+  }
+  
+  /* Change the link color to #111 (black) on hover */
+a:hover {
+    color: rgb(52, 179, 126);
+  }

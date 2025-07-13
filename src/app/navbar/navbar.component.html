@@ -1,14 +1,31 @@
 <nav class="navbar">
-    
-    <ul class="navbar-links">
-        <li><div class="navbar-logo">
-            <img class="ybl" [src]="'assets/images/yamble-logo.png'" alt="Yamble" />
-          </div></li>
-      <li><a routerLink="/">Home</a></li>
-      <li><a routerLink="/about">How to Play</a></li>
-      <li><a routerLink="/scores">Leaderboard</a></li>
-    </ul>
-    <div class="navbar-actions">
-      <!-- Add login/logout buttons or user-related actions here -->
-    </div>
-  </nav>
+  <ul class="navbar-links desktop-menu">
+    <li>
+      <div class="navbar-logo">
+        <img class="ybl" [src]="'assets/images/yamble-logo.png'" alt="Yamble" />
+      </div>
+    </li>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/about">How to Play</a></li>
+    <li><a routerLink="/scores">Leaderboard</a></li>
+  </ul>
+
+  <ul class="navbar-links mobile-menu"  *ngIf="menuOpen">
+    <li>
+      <div class="navbar-logo">
+        <img class="ybl" [src]="'assets/images/yamble-logo.png'" alt="Yamble" />
+      </div>
+    </li>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/about">How to Play</a></li>
+    <li><a routerLink="/scores">Leaderboard</a></li>
+    <li class="profile-mobile"><a routerLink="/login" *ngIf="!loggedIn">Login/Register</a><a [routerLink]="'/profile/' + username" *ngIf="loggedIn">{{ username }}</a></li>
+  </ul>
+
+  <div class="navbar-actions">
+    <a routerLink="/login" class="profile-desktop" *ngIf="!loggedIn">Login/Register</a><a [routerLink]="'/profile/' + username" class="profile-desktop" *ngIf="loggedIn">{{ username }}</a>
+    <button class="hamburger" (click)="menuOpen = !menuOpen">
+      &#9776;
+    </button>
+  </div>
+</nav>

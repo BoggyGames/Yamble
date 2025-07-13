@@ -4,21 +4,22 @@ import { NgIf, NgForOf, AsyncPipe } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as DiceActions from './dice.actions';
+import { DiceEffects } from './dice.effects';
 import { DiceState, scoreRow } from './dice.reducer';
 
 /*
 STILL TO-DO:
 
 -footer
--mode choice
--challenges
--ocisti reducer code
--efekti
+-mode choice DONE
+-challenges DONE
+-ocisti reducer code DONE
+-efekti (bolje ne, za telefoni da bude safe)
 -prozirne tackice na kockice (molim te)
--profile & auth
--storage
--leaderboards
--badges
+-profile & auth DONE
+-storage DONE
+-leaderboards DONE
+-badges DONE
 
 */
 
@@ -60,6 +61,45 @@ export class DiceComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchRolls();
+
+    this.state$.subscribe(state => {
+      const isFinalRoll = state.currentRollIdx === 13;
+      const isPractice = this.practiceMode;
+
+      if (isFinalRoll) console.log("Ended!");
+  
+      if (isFinalRoll && !isPractice) {
+        this.submitToServer(state);
+      }
+    });
+  }
+
+  submitToServer(state: any) {
+    const currentUrl = window.location.href;
+      console.log("Submitting...");
+    
+      let fetchTarget = "";
+
+      if(currentUrl.includes("localhost")) {
+        fetchTarget = "http://localhost:3000"
+      }
+      else {
+        fetchTarget = "https://api.boggy.dev";
+      }
+
+      //console.log(fetchTarget);
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      fetch(fetchTarget + "/yamble", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(state),
+      });
+      console.log("Score sent to server!");
   }
 
   getRandomInt(max: number) {
@@ -81,7 +121,9 @@ export class DiceComponent implements OnInit {
 
   practice() {
     this.practiceMode = true;
-    this.store.dispatch(DiceActions.loadRolls({ seed : this.getRandomInt(12345600), mode : this.modeClicked * (1 + this.getRandomInt(7))}));
+    const pick = (1 + this.getRandomInt(7));
+    this.todaysMode = pick;
+    this.store.dispatch(DiceActions.loadRolls({ seed : this.getRandomInt(12345600), mode : this.modeClicked * pick}));
   }
 
   previewLine(row: string) {
@@ -113,7 +155,7 @@ export class DiceComponent implements OnInit {
     //console.log(data);
     this.todaysDate = data.rollDate;
     this.todaysSeed = data.randomSeed;
-    this.todaysMode = (new Date(this.todaysDate + 'T00:00:00Z')).getUTCDay();
+    this.todaysMode = ((new Date(this.todaysDate + 'T00:00:00Z')).getUTCDay()) + 1;
 
     this.fetched = true;
 
@@ -163,7 +205,7 @@ export class DiceComponent implements OnInit {
 
     switch(this.todaysMode * this.modeClicked) {
       case 0:
-        return "";
+        return " ";
       case 1:
         challname = "A single submitted 0 sets your TOTAL to 0 permanently!";
         break;
@@ -192,6 +234,7 @@ export class DiceComponent implements OnInit {
 
   startGame(mode: number) {
     this.practiceMode = false;
+    this.todaysMode = ((new Date(this.todaysDate + 'T00:00:00Z')).getUTCDay()) + 1;
     this.modeClicked = mode;
     this.selected = true;
     const dateOld = localStorage.getItem((mode === 0 ? "dailyDate" : "challDate"));

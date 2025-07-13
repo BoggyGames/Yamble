@@ -31,7 +31,7 @@ table {
 }
 tr:nth-child(even) {
     background-color: #d5cae2;
-    height: 30px;
+    height: 40px;
     opacity: 0.8;
 }
 
@@ -47,14 +47,17 @@ tr:nth-child(1) {
 }
 tr:nth-child(2) {
     background-color: #dbb537;
+    text-shadow: 0 0 3px #e5dfeccc, 0 0 4px #d5cae294, 0 0 6px #d5cae259;
     height: 40px;
 }
 tr:nth-child(3) {
-    background-color: #d1ced3;
+    background-color: #aab6c9;
+    text-shadow: 0 0 3px #e5dfeccc, 0 0 4px #d5cae294, 0 0 6px #d5cae259;
     height: 40px;
 }
 tr:nth-child(4) {
     background-color: #d88660;
+    text-shadow: 0 0 3px #e5dfeccc, 0 0 4px #d5cae294, 0 0 6px #d5cae259;
     height: 40px;
 }
 .profile-line {

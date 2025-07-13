@@ -32,6 +32,7 @@
 .desc-label {
     margin-top: 1px;
     margin-bottom: 3px;
+    min-height: 1.25em;
 }
 .title-label {
     font-size: 20px;

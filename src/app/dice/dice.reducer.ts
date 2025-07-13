@@ -220,6 +220,7 @@ export const diceReducer = createReducer(
     if (submit.currentRollIdx == 13 && !practiceMode) {
       //submit the score to da leaderboard!! do it!! hurry!!!!! samo sto jos nemamo liderbord (todo :))
 
+      /* */
       //ukloni ovaj print pre nego da pushujes bilo sta na production lmao
       //console.log(submit);
     }

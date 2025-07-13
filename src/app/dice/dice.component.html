@@ -43,16 +43,17 @@
             <p>Your total was <b>{{st.usedRows["∑ Total"]}}</b> - share it with your friends!<br>Thanks for playing today!</p>
             <button *ngIf="false === false" class="final-btn" (click)="clipboard(st.usedRows)">Share (to clipboard)</button>
             <button class="final-btn" (click)="practice()">Practice Mode</button>
+            <button class="final-btn" (click)="startGame(modeClicked === 0 ? 1 : 0)">{{modeClicked === 0 ? "Play Challenge" : "Play Daily"}}</button>
           </div>
         </div>
       </div>
       <table class="score-table">
         <tr *ngFor="let row of allRows">
           <td>{{ row }}</td>
-          <td [class.bonus]="inputRows[st.currentRollIdx] === row" [class.preview]="!(st.usedRows[row] >= -200)"
+          <td [class.bonus]="inputRows[st.currentRollIdx] === row" [class.preview]="!(st.usedRows[row] >= -900)"
           (click)="onSubmit(row, st.usedRows)"
           (mouseenter)="onHover(row, st.usedRows)"
-          (mouseleave)="onUnhover(row)">{{ (st.usedRows[row] >= -200 ? st.usedRows[row] : st.previews[row]) }}</td>
+          (mouseleave)="onUnhover(row)">{{ (st.usedRows[row] >= -900 ? st.usedRows[row] : st.previews[row]) }}</td>
         </tr>
       </table>
     </div>

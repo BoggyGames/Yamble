@@ -1,44 +1,146 @@
 .navbar {
-    font-size: 15px;
-    font-family: "Bahnschrift", sans-serif;
-    margin: 0;
-    padding: 0;
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* This pushes left + right apart */
+  background-color: #333;
+  box-shadow: #2907449d 0px 5px 5px;
+  
+  font-size: 15px;
+  font-family: "Bahnschrift", sans-serif;
+  margin-bottom: 25px;
 }
 
-.navbar-links {
-  padding-left: 15px;
+/* Remove floats and use flex */
+ul.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar-links li {
+  /* no float! */
+}
+
+.navbar-links li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.navbar-links li a:hover {
+  background-color: #111;
+  color: rgb(91, 228, 143);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-actions a {
+  color: white;
+  text-decoration: none;
+  padding: 14px 16px;
+}
+
+.navbar-actions a:hover {
+  background-color: #111;
+  color: rgb(91, 228, 143);
 }
 
 .ybl {
-    margin-top: 8px;
+  margin-top: 8px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-ul {
-    list-style-type: none;
-    margin-top: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 25px;
-    overflow: hidden;
+/* Default: hamburger hidden */
+.hamburger {
+  display: none;
+  font-size: 24px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Hide navbar-links on narrow screens unless menu is open */
+@media (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+
+  .navbar-links {
+    display: flex !important;
+    flex-direction: column;
+    
+    width: 100%;
     background-color: #333;
-    box-shadow: #2907449d 0px 5px 5px;
+    padding-bottom: 1rem;
   }
-  
-  li {
-    float: left;
+
+  .navbar-links.open {
+    display: flex;
   }
-  
-  li a {
+
+  .navbar-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .hamburger {
     display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+    margin-left: 5px;
+  }
+
+  /* Optional: make links full-width on mobile */
+  .navbar-links li a {
+    padding: 0px 14px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .desktop-menu {
+    display: none !important;
+    padding: 0 15px;
+  }
+
+  .mobile-menu {
+    flex-direction: column;
+    width: 100%;
+    background-color: #333;
+    padding-bottom: 1rem;
+  }
+
+  .mobile-menu li {
+    width: 100%; /* Make the li take full width */
   }
   
-  /* Change the link color to #111 (black) on hover */
-  li a:hover {
-    background-color: #111;
-    color: rgb(91, 228, 143);
+  .mobile-menu li a {
+    display: block;           /* So padding works as a box */
+    width: 100%;              /* Stretch to full width */
+    text-align: center;         /* Align text to the left */
+    padding: 10px 0px;
   }
+  .mobile-menu li:first-child {
+    width: auto;
+    margin: 0 auto; /* center it */
+  }
+
+  .profile-desktop {
+    display: none;
+  }
+
+  .profile-mobile {
+    display: block;
+  }
+}

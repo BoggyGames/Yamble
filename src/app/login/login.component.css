@@ -1,0 +1,53 @@
+.prof-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.prof-panel {
+    position: relative; /* allow ::before to position absolutely inside */
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 5px;
+    box-shadow: #290744 5px 5px 5px;
+    padding: 10px;
+    color: #fff;
+    background-color: #9757e041;
+  }
+
+  .fieldy {
+    border-radius: 5px;
+    height: 40px;
+    width: 200px;
+    border: none;
+    font-family: "Bahnschrift", sans-serif;
+  }
+
+  .start-btn {
+    width: 90px;
+    background-color: #b163d8;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 20px;
+  }
+
+  .msg {
+    text-align: center;
+  }
+
+  .start-btn:hover {
+    background-color: #641e92;
+    color: white;
+}
+
+.start-btn:active {
+    background-color: #52127c;
+    color: rgb(192, 159, 179);
+}
